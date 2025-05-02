@@ -9,8 +9,8 @@ This repository contains a NestJS application implementing a Role-Based Access C
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/shivamkumraa9/medguard.git
+   cd medguard
    ```
 
 2. Install dependencies:
