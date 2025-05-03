@@ -18,6 +18,16 @@ import { User } from '../entities/user.entity';
 export class ResourceController {
   constructor(private readonly acl: AccessControlService) {}
 
+  @Get('audit-logs')
+  async getLogs(@Req() req: Request & { user: User }) {
+    const user = req.user;
+    const perms = await this.acl.getPermissionsForRole(user.role);
+    if (!perms.includes('read')) {
+      throw new ForbiddenException('Access denied');
+    }
+    return this.acl.logRepo.find();
+  }
+
   @Get(':id')
   async getOne(
     @Param('id') id: number,
@@ -57,15 +67,5 @@ export class ResourceController {
   ): Promise<PatientRecord> {
     const user = req.user;
     return this.acl.updateResource(user, id, data);
-  }
-
-  @Get('audit-logs')
-  async getLogs(@Req() req: Request & { user: User }) {
-    const user = req.user;
-    const perms = await this.acl.getPermissionsForRole(user.role);
-    if (!perms.includes('read-all')) {
-      throw new ForbiddenException('Access denied');
-    }
-    return this.acl.logRepo.find();
   }
 }
